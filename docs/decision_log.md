@@ -5,6 +5,37 @@ entry. Newest first. Format: **ID · date · decision** — context — conseque
 
 ---
 
+### D-014 · 2026-10-15 · Validation plan pre-registered
+- **Decision:** metrics, comparisons and verdict rules for Phases 9–10 are fixed in
+  [`validation_plan.md`](validation_plan.md) and committed before any validation-dataset values are
+  analysed. Deviations will be logged here.
+
+### D-013 · 2026-10-15 · Exploratory DE design and lightweight regulatory inference
+- **DE (Phase 6):** two contrasts sharing no primary cells — S3 vs S2 (full depth) and S3 vs S1
+  (depth-matched). Candidate = FDR < 0.05, |pseudobulk log2FC| ≥ 0.5, same sign in both, detected
+  in ≥ 10 % of the higher group, not contamination-sensitive. Cell-level p-values rank only.
+- **Signature (Phase 7):** candidates with bootstrap stability ≥ 0.95 that stay concordant in
+  non-cycling ILC2s; top 50 per direction; frozen with SHA-256 before validation.
+- **TF activity (Phase 8):** decoupler ULM on CollecTRI instead of SCENIC (heavy); activity is
+  inference, not binding evidence.
+
+### D-012 · 2026-10-15 · S1 contamination, gene exclusions and ILC2 subsets
+- **Findings:** at matched depth, S1 ILC2-like cells carry ~2.5× more T-lineage transcripts and
+  ~10× more haemoglobin signal than S3, and high immediate-early (Fos) expression — consistent with
+  ambient RNA / dissociation stress. Not correctable: raw droplets are not deposited.
+  S2 has 197 ILC2s at mito ≤ 10 % vs the 189 primary ILC2s published, so the published primary
+  group most likely comprised S2 only; S1 appears absent from the published ILC2 analysis.
+- **Decisions:** contamination-sensitive gene families (TCR segments, Klr, Gzm, Cd3/Cd8, Ccl5,
+  Nkg7, haemoglobins, mito, ribosomal) are excluded from signatures. nILC2/iILC2 are not
+  resolvable as stable sub-clusters in the clean reference library (no resolution reaches
+  min ARI 0.8), so no discrete subset labels are assigned; the iILC2 program is a continuous score.
+
+### D-011 · 2026-10-15 · Depth-matched embedding, no cross-library batch correction
+- **Decision:** embed and cluster on binomially thinned counts (all libraries thinned to the
+  shallowest median); keep full-depth counts for DE. No Harmony/integration across libraries,
+  because the only secondary library is also a separate batch. Resolution chosen by a pre-specified
+  rule: highest resolution with min ARI ≥ 0.8 across 5 Leiden seeds.
+
 ### D-010 · 2026-10-15 · Provisional Phase 3 thresholds applied
 - **Context:** Alperen decided to complete all phases now and have Divya review the whole project
   at the end, rather than block on threshold sign-off.
