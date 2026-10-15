@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0] — 2026-10-15
+
+### Added
+- Script 03 — Phase 3 QC (`make qc`): 10x triplet discovery by GSM prefix, per-cell metrics
+  (UMI, genes, mito %, ribo %), per-sample scrublet doublets, MAD outlier flags, violin and
+  scatter figures, Markdown report. Report-only until thresholds are agreed (D-008).
+- Synthetic GSE295590-shaped test data: small S2, mito-rich S3 (5 new tests, 24 total).
+- `analysis` optional dependency group; `ilc2-qc` command; VS Code task.
+
 ## [0.1.0] — 2026-10-15
 
 ### Added

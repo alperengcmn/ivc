@@ -4,9 +4,9 @@
 
 **A reproducible, replicate-aware reanalysis of trained/recall-associated transcriptional programs in mouse lung ILC2s**
 
-![status](https://img.shields.io/badge/status-Phase%201%20·%20metadata%20validation-blue)
+![status](https://img.shields.io/badge/status-Phase%203%20·%20QC-blue)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776AB)
-![tests](https://img.shields.io/badge/tests-19%20passing-brightgreen)
+![tests](https://img.shields.io/badge/tests-24%20passing-brightgreen)
 ![claims](https://img.shields.io/badge/claims-evidence--scoped-8A2BE2)
 
 [Question](#-scientific-question) ·
@@ -88,7 +88,7 @@ flowchart TD
     classDef done fill:#d1fae5,stroke:#059669,color:#064e3b
     classDef active fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
     classDef blocked fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
-    class P0,P1 active
+    class P0,P1,P2,P3 active
     class P6 blocked
 ```
 
@@ -98,7 +98,7 @@ Full phase table with outputs and gates → [`docs/pipeline.md`](docs/pipeline.m
 
 ## 📍 Current status
 
-**Phase 1 — dataset validation of GSE295590.**
+**GSE295590 accession structure validated · replicate mapping open · Phase 3 QC script ready for the first real-data run.**
 
 | | |
 |---|---|
@@ -106,7 +106,7 @@ Full phase table with outputs and gates → [`docs/pipeline.md`](docs/pipeline.m
 | ✅ | Accession crosswalk validated: 3 GEO samples → 3 BioSamples → 3 SRA Experiments → 6 SRR runs |
 | ❓ | **Mouse-to-library mapping and pre-library pooling unresolved** — query to authors drafted ([`docs/author_query.md`](docs/author_query.md)) |
 | ⏸ | Formal differential expression blocked until replicate structure is known ([D-004](docs/decision_log.md)) |
-| ⬜ | Next: Phase 2 download → Phase 3 QC (S2 has ~838 cells vs ~9,000; S3 shows elevated mitochondrial fraction) |
+| 🔄 | Phase 3 QC (`make qc`) runs in report-only mode: flags low recovery (S2 ≈ 838 cells) and elevated mito (S3) without removing cells, until thresholds are agreed ([D-008](docs/decision_log.md)) |
 
 Details → [`docs/GSE295590_design.md`](docs/GSE295590_design.md)
 
@@ -115,7 +115,7 @@ Details → [`docs/GSE295590_design.md`](docs/GSE295590_design.md)
 ## 🚀 Quickstart
 
 **Requirements:** Python ≥ 3.10. Conda/Mamba for the full analysis environment.
-The Phase 1 validators use only the standard library — they run on any Python.
+The Phase 1 validators use only the standard library; QC and later phases need the conda environment.
 
 ```bash
 git clone <repo-url> ilc2-trained-immunity
@@ -128,9 +128,10 @@ conda activate ilc2-tri
 # — or — lightweight, validators + tests only
 python -m pip install -e ".[dev]"
 
-make test        # 19 tests
+make test        # 24 tests
 make validate    # Scripts 01 + 02 → reports/validation/
 make fetch       # Phase 2: download GSE295590 matrices into data/raw/
+make qc          # Phase 3: QC report → reports/qc/, outputs → results/qc/
 make help        # all commands
 ```
 
@@ -171,6 +172,7 @@ Mermaid preview). Then:
 | `scripts/00_fetch_gse295590.sh` | 2 | — | download log with SHA-256 |
 | `scripts/01_validate_sample_metadata.py` | 1 | `metadata/GSE295590/samples.tsv` | `STRUCTURAL METADATA VALIDATION` |
 | `scripts/02_validate_geo_sra_crosswalk.py` | 1 | `metadata/GSE295590/sra_crosswalk.tsv` | `GEO-SRA CROSSWALK VALIDATION` |
+| `scripts/03_qc.py` | 3 | `data/raw/GSE295590/` | `PHASE 3 GATE` (NOT EVALUABLE until thresholds agreed) |
 
 All Python scripts: `--help`, Markdown report via `--report PATH` (stdout otherwise),
 exit codes `0` pass · `1` validation fail · `2` I/O error.
@@ -191,7 +193,7 @@ ilc2-trained-immunity/
 ├── notebooks/               exploration only — results come from scripts
 ├── data/{raw,processed}/    git-ignored, re-creatable from accessions
 ├── results/                 git-ignored analysis outputs, one folder per phase
-└── reports/validation/      committed validation reports — reviewable evidence
+└── reports/                validation/ + qc/ — committed, reviewable evidence
 ```
 
 ---

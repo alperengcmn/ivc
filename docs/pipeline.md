@@ -8,7 +8,7 @@ Status legend: ✅ done · 🔄 in progress · ⏸ blocked · ⬜ not started.
 | 0 | Hypothesis & success criteria | [`00_hypothesis_and_success_criteria.md`](00_hypothesis_and_success_criteria.md) | thresholds agreed | 🔄 thresholds TBD |
 | 1 | Dataset discovery & validation | `validated_metadata`, compatibility report, `selected_datasets` | metadata validated **and** ATAC availability checked | 🔄 GSE295590 structure ✅; replicate mapping ❓ |
 | 2 | Data acquisition | raw files + `download_log.tsv` | all accessions downloaded & organised | ⬜ `make fetch` ready |
-| 3 | Single-cell QC | `qc_summary.csv`, filtered object, QC figures, `qc_report.md` | QC meets Phase 0 thresholds | ⬜ |
+| 3 | Single-cell QC | `qc_summary.csv`, filtered object, QC figures, `qc_report.md` | QC meets Phase 0 thresholds | 🔄 Script 03 ready (report-only) |
 | 4 | Normalisation & dimensionality reduction | PCA/UMAP, clustering table | clustering stable, batch effects evaluated | ⬜ |
 | 5 | ILC2 identification & subsets | annotated cells, marker tables, `ilc2_subset_report.md` | ≥ 1 marker category confirms ILC2; ≥ N cells | ⬜ |
 | 6 | Differential expression | DE table, volcano plots, ranked lists | ≥ K biological replicates, FDR < 0.05 | ⏸ blocked (D-004) |
@@ -33,4 +33,5 @@ dataset identified."
 | `scripts/00_fetch_gse295590.sh` | 2 | download + checksum + log GSE295590 processed matrices |
 | `scripts/01_validate_sample_metadata.py` | 1 | structural validation of sample metadata |
 | `scripts/02_validate_geo_sra_crosswalk.py` | 1 | GEO → BioSample → SRX → SRR crosswalk validation |
-| `scripts/03_…` | 3 | QC — next |
+| `scripts/03_qc.py` | 3 | per-cell QC metrics, doublets, MAD flags, figures; filters only once thresholds are agreed |
+| `scripts/04_…` | 4 | normalisation & clustering — next |

@@ -23,6 +23,12 @@
       "problemMatcher": []
     },
     {
+      "label": "ILC2: Phase 3 QC (Script 03)",
+      "type": "shell",
+      "command": "python scripts/03_qc.py",
+      "problemMatcher": []
+    },
+    {
       "label": "ILC2: run tests",
       "type": "shell",
       "command": "python -m pytest",

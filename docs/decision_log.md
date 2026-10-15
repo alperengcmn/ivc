@@ -5,6 +5,14 @@ entry. Newest first. Format: **ID · date · decision** — context — conseque
 
 ---
 
+### D-008 · 2026-10-15 · Phase 3 QC runs report-only until thresholds are agreed
+- **Context:** Phase 0 thresholds X/Y are not yet agreed; S2 is small and S3 mito-rich.
+- **Decision:** Script 03 removes no cells while any `phase3_qc` threshold is `null`. It flags
+  per-sample MAD outliers (5 MAD counts/genes on log scale, 3 MAD upper for mito %) and reports
+  `suggested_max_pct_mt` as a discussion starting point only. Thresholds are set per dataset after
+  both collaborators review the report; once set, the same script filters and evaluates the gate.
+- **Consequence:** no threshold is tuned to a result; S2/S3 are investigated, never silently dropped.
+
 ### D-007 · 2026-10-15 · Validators report scoped status labels
 - **Context:** a bare "PASS" could be read as "biological design validated" (Divya's review).
 - **Decision:** Script 01 reports `STRUCTURAL METADATA VALIDATION: PASS/FAIL`; Script 02 reports

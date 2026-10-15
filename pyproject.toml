@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ilc2tri"
-version = "0.1.0"
+version = "0.2.0"
 description = "Lung ILC2 trained/recall-associated transcriptional signatures: a reproducible, replicate-aware single-cell reanalysis."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -18,10 +18,12 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "ruff>=0.4"]
+analysis = ["scanpy>=1.10", "anndata", "pyyaml", "matplotlib", "scikit-image"]
 
 [project.scripts]
 ilc2-validate-samples = "ilc2tri.validate_samples:main"
 ilc2-validate-crosswalk = "ilc2tri.validate_crosswalk:main"
+ilc2-qc = "ilc2tri.qc:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

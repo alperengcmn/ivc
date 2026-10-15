@@ -12,6 +12,7 @@ dependencies:
   - python=3.11
   # core single-cell stack (Phases 3–7)
   - scanpy>=1.10          # includes sc.pp.scrublet for doublet scoring
+  - scikit-image          # required by scanpy's scrublet
   - anndata
   - numpy
   - scipy
