@@ -3,6 +3,8 @@
 ## [0.3.1] — 2026-10-15
 
 ### Fixed
+- QC report is now produced entirely by Script 03: it copies its figures to `reports/qc/figures/` and
+  embeds them, so the committed report renders on GitHub and a rerun reproduces it exactly.
 - `make qc` crashed with `AttributeError: Can only use .cat accessor with a 'category' dtype` on
   older stacks (scanpy 1.10 / anndata 0.10 / pandas 2.2, as resolved by conda-forge): scrublet drops
   categorical dtypes. QC no longer depends on the dtype, restores it after scrublet, and refuses to

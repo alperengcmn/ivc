@@ -34,8 +34,10 @@ Counts/genes outliers: > 5 MAD on log scale, per sample. Mito outliers: > 3 MAD 
 - `GSM8953516`: 10.1 % of cells have > 20 % mitochondrial reads — a distinct high-mito / low-complexity tail typical of damaged cells. Inspect `qc_counts_vs_genes.png`.
 
 ## Figures
-- `results/qc/qc_figures/qc_violins.png` (committed copy: `reports/qc/figures/qc_violins.png`)
-- `results/qc/qc_figures/qc_counts_vs_genes.png` (committed copy: `reports/qc/figures/qc_counts_vs_genes.png`)
+![qc_violins](figures/qc_violins.png)
+![qc_counts_vs_genes](figures/qc_counts_vs_genes.png)
+
+Full-resolution outputs (git-ignored): `results/qc/`.
 
 ## Next step
 Agree `phase3_qc` thresholds in `config/parameters.yaml` (log the decision in `docs/decision_log.md`), then re-run `make qc` to apply them and evaluate the gate.

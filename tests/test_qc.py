@@ -113,6 +113,8 @@ def test_report_only_flags_without_removing(raw_dir, params, tmp_path):
     assert adata.n_obs == sum(n for _, n, _ in SPEC.values())  # nothing removed
     assert {"outlier_counts", "outlier_mito", "pct_counts_mt"} <= set(adata.obs.columns)
     assert (out / "qc_figures" / "qc_violins.png").stat().st_size > 0
+    assert (report.parent / "figures" / "qc_violins.png").is_file()
+    assert "![qc_violins](figures/qc_violins.png)" in text
 
 
 def test_filter_mode_applies_thresholds(raw_dir, params, tmp_path):

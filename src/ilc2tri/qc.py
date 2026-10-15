@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import shutil
 import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -455,7 +456,9 @@ def render(
             *([f"- {n}" for n in notes] or ["- None flagged."]),
             "",
             "## Figures",
-            *[f"- `{p}`" for p in figure_paths],
+            *[f"![{p.stem}](figures/{p.name})" for p in figure_paths],
+            "",
+            "Full-resolution outputs (git-ignored): `results/qc/`.",
             "",
             "## Next step",
             "Agree `phase3_qc` thresholds in `config/parameters.yaml` (log the decision in `docs/decision_log.md`), "
@@ -525,6 +528,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     summary.to_csv(args.out_dir / "qc_summary.csv")
     adata.obs.to_csv(args.out_dir / "cell_qc_metrics.csv.gz")
     fig_paths = figures(adata, args.out_dir / "qc_figures")
+    # Committed copies next to the report, so the report renders on GitHub without results/.
+    report_figs = args.report.parent / "figures"
+    report_figs.mkdir(parents=True, exist_ok=True)
+    for fig in fig_paths:
+        shutil.copy2(fig, report_figs / fig.name)
 
     retained = None
     if mode == "filter":
