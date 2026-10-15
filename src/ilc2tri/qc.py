@@ -46,6 +46,13 @@ GROUP_COLORS = {
     "secondary": "#d97706",
 }  # blue / amber, colour-blind safe pair
 SCRUBLET_MIN_CELLS = 500  # scrublet estimates are unreliable on very small libraries
+SCRUBLET_SILENT_MIN_CELLS = (
+    2_000  # 0 % predicted doublets in a library this large = auto-threshold failure
+)
+DEPTH_RATIO_FLAG = 3.0  # flag libraries sequenced > 3x shallower than the deepest one
+HIGH_MITO_PCT = 20.0  # descriptive cut-off for the high-mito tail
+HIGH_MITO_TAIL_FLAG = 5.0  # flag samples where > 5 % of cells exceed HIGH_MITO_PCT
+COUNT_FLOOR_SPREAD = 1.2  # all per-sample minima within 20 % of each other -> shared pre-filter
 
 
 @dataclass
@@ -162,10 +169,14 @@ def summarise(adata):
             "sample_title": g["sample_title"].first(),
             "infection_group": g["infection_group"].first(),
             "n_cells": g.size(),
+            "min_total_counts": g["total_counts"].min(),
             "median_total_counts": g["total_counts"].median(),
             "median_genes": g["n_genes_by_counts"].median(),
             "median_pct_mt": g["pct_counts_mt"].median(),
             "p90_pct_mt": g["pct_counts_mt"].quantile(0.9),
+            "pct_cells_mt_gt20": g["pct_counts_mt"].apply(
+                lambda s: (s > HIGH_MITO_PCT).mean() * 100
+            ),
             "median_pct_ribo": g["pct_counts_ribo"].median(),
             "pct_flag_counts": g["outlier_counts"].mean() * 100,
             "pct_flag_mito": g["outlier_mito"].mean() * 100,
@@ -182,17 +193,39 @@ def summarise(adata):
     return summary.round(3)
 
 
+def dataset_notes(summary) -> list[str]:
+    """Observations that concern the dataset as a whole rather than one sample."""
+    notes = []
+    floors = summary["min_total_counts"]
+    if len(floors) > 1 and floors.min() > 0 and floors.max() / floors.min() <= COUNT_FLOOR_SPREAD:
+        notes.append(
+            f"Every library starts at ≈ {floors.min():,.0f} UMI per cell — the deposited matrices appear to be "
+            "**already filtered** (e.g. a ≥ 500-UMI cut-off by the authors). Barcodes below that floor cannot be "
+            "recovered from these files."
+        )
+    depth = summary["median_total_counts"]
+    if len(depth) > 1 and depth.min() > 0 and depth.max() / depth.min() > DEPTH_RATIO_FLAG:
+        shallow = depth.idxmin()
+        notes.append(
+            f"**Sequencing depth differs {depth.max() / depth.min():.1f}×** between libraries "
+            f"(`{shallow}` median {depth.min():,.0f} UMI vs {depth.max():,.0f}). Depth is a technical confounder of "
+            "any between-sample comparison: normalisation (Phase 4) must account for it, and Phase 11 should include "
+            "a depth-matched (downsampled) sensitivity analysis."
+        )
+    return notes
+
+
 def sample_notes(summary) -> list[str]:
     notes = []
     mt_median_all = summary["median_pct_mt"].median()
     for geo, row in summary.iterrows():
         if row["n_cells"] > UNFILTERED_BARCODE_LIMIT:
             notes.append(
-                f"`{geo}`: {row['n_cells']:,} barcodes — the matrix may be **unfiltered** (raw droplets)."
+                f"`{geo}`: {int(row['n_cells']):,} barcodes — the matrix may be **unfiltered** (raw droplets)."
             )
         if row["cells_vs_median"] < LOW_RECOVERY_FRACTION:
             notes.append(
-                f"`{geo}`: low cell recovery ({row['n_cells']:,} cells, {row['cells_vs_median']:.0%} of the median). "
+                f"`{geo}`: low cell recovery ({int(row['n_cells']):,} cells, {row['cells_vs_median']:.0%} of the median). "
                 "Investigate library recovery / input; do **not** use it to infer mouse numbers."
             )
         if "pct_predicted_doublet" in row and row["n_cells"] < SCRUBLET_MIN_CELLS:
@@ -200,10 +233,26 @@ def sample_notes(summary) -> list[str]:
                 f"`{geo}`: doublet rate ({row['pct_predicted_doublet']:.1f} %) is unreliable with "
                 f"< {SCRUBLET_MIN_CELLS} cells; do not filter this sample on predicted doublets alone."
             )
+        if (
+            "pct_predicted_doublet" in row
+            and row["n_cells"] >= SCRUBLET_SILENT_MIN_CELLS
+            and row["pct_predicted_doublet"] == 0
+        ):
+            notes.append(
+                f"`{geo}`: scrublet predicted **0 %** doublets in {int(row['n_cells']):,} cells — its automatic threshold "
+                "most likely failed (10x libraries of this size typically carry several % doublets). Keep "
+                "`doublet_score` and assess doublets at cluster level in Phase 5 instead."
+            )
         if mt_median_all > 0 and row["median_pct_mt"] > 1.5 * mt_median_all:
             notes.append(
                 f"`{geo}`: elevated mitochondrial fraction (median {row['median_pct_mt']:.2f} % vs "
                 f"{mt_median_all:.2f} % across samples). Investigate before excluding."
+            )
+        if row["pct_cells_mt_gt20"] > HIGH_MITO_TAIL_FLAG:
+            notes.append(
+                f"`{geo}`: {row['pct_cells_mt_gt20']:.1f} % of cells have > {HIGH_MITO_PCT:.0f} % mitochondrial "
+                "reads — a distinct high-mito / low-complexity tail typical of damaged cells. Inspect "
+                "`qc_counts_vs_genes.png`."
             )
     return notes
 
@@ -214,7 +263,7 @@ def apply_thresholds(adata, t: dict[str, Any]):
         & (adata.obs["n_genes_by_counts"] >= t["min_genes_per_cell"])
         & (adata.obs["n_genes_by_counts"] <= t["max_genes_per_cell"])
     )
-    if "predicted_doublet" in adata.obs:
+    if t.get("remove_predicted_doublets") and "predicted_doublet" in adata.obs:
         keep &= ~adata.obs["predicted_doublet"].astype(bool)
     return adata[keep.to_numpy()].copy()
 
@@ -306,7 +355,8 @@ def render(
     doublet_status: str,
     notes: list[str],
     figure_paths: list[Path],
-    n_after: int | None,
+    retained=None,
+    global_notes: list[str] | None = None,
 ) -> str:
     unset = [k for k in THRESHOLD_KEYS if thresholds.get(k) is None]
     if mode == "report-only":
@@ -316,8 +366,12 @@ def render(
             + ". No cells were removed."
         )
     else:
-        ok = bool((summary["n_cells"] >= thresholds["min_cells_per_sample"]).all())
-        gate = f"**PHASE 3 GATE: {'PASS' if ok else 'FAIL'}** — {n_after:,} cells retained after filtering."
+        floor = thresholds["min_cells_per_sample"]
+        ok = bool((retained >= floor).all())
+        gate = (
+            f"**PHASE 3 GATE: {'PASS' if ok else 'FAIL'}** — {int(retained.sum()):,} cells retained; "
+            f"every sample needs ≥ {floor:,} cells after filtering."
+        )
     t = summary[
         [
             "sample_title",
@@ -328,6 +382,7 @@ def render(
             "median_genes",
             "median_pct_mt",
             "p90_pct_mt",
+            "pct_cells_mt_gt20",
             "median_pct_ribo",
         ]
     ]
@@ -360,9 +415,18 @@ def render(
             "## Flags (descriptive — no cells removed in report-only mode)",
             f"Counts/genes outliers: > {MAD_COUNTS} MAD on log scale, per sample. Mito outliers: > {MAD_MITO} MAD above "
             "the sample median. `suggested_max_pct_mt` = median + 3 MAD — a starting point for the threshold discussion, "
-            "not an agreed value.",
+            "not an agreed value. On narrow mito distributions MAD-based cut-offs are very stringent and can remove "
+            "metabolically active (OXPHOS-high) cells, so treat them as an upper bound on stringency.",
             "",
             _table(flags),
+            "",
+            *(
+                ["## Retained after filtering", _table(retained.to_frame("retained_cells")), ""]
+                if retained is not None
+                else []
+            ),
+            "## Dataset-level observations",
+            *([f"- {n}" for n in global_notes or []] or ["- None."]),
             "",
             "## Samples to investigate",
             *([f"- {n}" for n in notes] or ["- None flagged."]),
@@ -439,17 +503,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     adata.obs.to_csv(args.out_dir / "cell_qc_metrics.csv.gz")
     fig_paths = figures(adata, args.out_dir / "qc_figures")
 
-    n_after = None
+    retained = None
     if mode == "filter":
         filtered = apply_thresholds(adata, thresholds)
-        n_after = filtered.n_obs
+        retained = filtered.obs["sample"].value_counts().reindex(summary.index, fill_value=0)
         filtered.write_h5ad(args.out_dir / f"{SERIES}_qc_filtered.h5ad", compression="gzip")
     else:
         adata.write_h5ad(args.out_dir / f"{SERIES}_qc_flagged_unfiltered.h5ad", compression="gzip")
 
     args.report.parent.mkdir(parents=True, exist_ok=True)
     report = render(
-        summary, mode, thresholds, doublet_status, sample_notes(summary), fig_paths, n_after
+        summary,
+        mode,
+        thresholds,
+        doublet_status,
+        sample_notes(summary),
+        fig_paths,
+        retained,
+        dataset_notes(summary),
     )
     args.report.write_text(report, encoding="utf-8")
     print(f"[qc] report → {args.report}")

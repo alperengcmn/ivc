@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0] — 2026-10-15
+
+### Added
+- First Phase 3 run on the deposited GSE295590 matrices; committed report `reports/qc/03_qc_report.md`.
+- QC report now detects: pre-filtered matrices (shared UMI floor), between-library depth
+  differences, silent scrublet failure (0 % doublets in large libraries), high-mito tails.
+- `docs/qc_threshold_proposal.md` — proposed thresholds with dry-run effects and sensitivity table.
+- `remove_predicted_doublets` parameter (default `false`, D-009).
+
+### Fixed
+- Filter-mode gate is evaluated on per-sample counts *after* filtering (was before).
+- Cell counts in report notes print as integers.
+
 ## [0.2.0] — 2026-10-15
 
 ### Added

@@ -9,6 +9,7 @@ phase3_qc:
   min_genes_per_cell: null
   max_genes_per_cell: null
   doublet_method: scrublet
+  remove_predicted_doublets: false  # scrublet auto-threshold failed on GSE295590 (D-009); doublets assessed in Phase 5
 
 phase5_annotation:
   min_confirmed_ilc2_cells: null  # Phase 0 threshold N

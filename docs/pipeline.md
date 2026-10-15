@@ -7,8 +7,8 @@ Status legend: ✅ done · 🔄 in progress · ⏸ blocked · ⬜ not started.
 |---|-------|-------------|--------------------|--------|
 | 0 | Hypothesis & success criteria | [`00_hypothesis_and_success_criteria.md`](00_hypothesis_and_success_criteria.md) | thresholds agreed | 🔄 thresholds TBD |
 | 1 | Dataset discovery & validation | `validated_metadata`, compatibility report, `selected_datasets` | metadata validated **and** ATAC availability checked | 🔄 GSE295590 structure ✅; replicate mapping ❓ |
-| 2 | Data acquisition | raw files + `download_log.tsv` | all accessions downloaded & organised | ⬜ `make fetch` ready |
-| 3 | Single-cell QC | `qc_summary.csv`, filtered object, QC figures, `qc_report.md` | QC meets Phase 0 thresholds | 🔄 Script 03 ready (report-only) |
+| 2 | Data acquisition | raw files + `download_log.tsv` | all accessions downloaded & organised | ✅ GSE295590 (SHA-256 logged) |
+| 3 | Single-cell QC | `qc_summary.csv`, filtered object, QC figures, `qc_report.md` | QC meets Phase 0 thresholds | 🔄 report-only run done; thresholds proposed ([proposal](qc_threshold_proposal.md)) |
 | 4 | Normalisation & dimensionality reduction | PCA/UMAP, clustering table | clustering stable, batch effects evaluated | ⬜ |
 | 5 | ILC2 identification & subsets | annotated cells, marker tables, `ilc2_subset_report.md` | ≥ 1 marker category confirms ILC2; ≥ N cells | ⬜ |
 | 6 | Differential expression | DE table, volcano plots, ranked lists | ≥ K biological replicates, FDR < 0.05 | ⏸ blocked (D-004) |

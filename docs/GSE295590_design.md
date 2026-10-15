@@ -27,13 +27,15 @@ and the initial raw-data inspection.
 | GSM8953515 | SAMN48137558 | SRX28549632 | SRR33304599, SRR33304600 | primary |
 | GSM8953516 | SAMN48137557 | SRX28549633 | SRR33304597, SRR33304598 | secondary |
 
-## Initial raw-data observations (to be reproduced in Phase 3)
+## Raw-data observations (reproduced in Phase 3 — [QC report](../reports/qc/03_qc_report.md))
 
 | Sample | Cells (first inspection) | Note |
 |--------|--------------------------|------|
 | S1 · GSM8953514 | ~9,012 | — |
 | S2 · GSM8953515 | ~838 | ~10× fewer cells — investigate (recovery, input, library quality); **do not** use it to infer mouse numbers |
 | S3 · GSM8953516 | ~8,677 | higher mitochondrial fraction — investigate, do not exclude automatically |
+
+Phase 3 confirmed all three counts exactly and added: matrices pre-filtered at ≈ 500 UMI; **S1 sequenced ~5.6× shallower** than S2/S3 (median 1,283 vs ~7,200 UMI); S3's mito signal is a distinct ~10 % damaged-cell cloud rather than a sample-wide shift.
 
 ## What we do **not** assume
 

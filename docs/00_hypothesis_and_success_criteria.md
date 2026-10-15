@@ -30,8 +30,8 @@ collaborators sign off. Gated steps must not run while their threshold is `null`
 
 | Phase | Criterion | Threshold | Status |
 |-------|-----------|-----------|--------|
-| 3 · QC | minimum cells per sample | X = **TBD** | set after inspecting S2 (838 cells in first inspection) |
-| 3 · QC | mitochondrial fraction | Y = **TBD** | set per dataset after inspecting distributions (S3 elevated) |
+| 3 · QC | minimum cells per sample | X = **500 (proposed)** | see [`qc_threshold_proposal.md`](qc_threshold_proposal.md) |
+| 3 · QC | mitochondrial fraction | Y = **20 % (proposed)** | removes S3 damaged cloud; 10 % as sensitivity |
 | 5 · Annotation | confirmed ILC2 cells | N = **TBD** | — |
 | 5 · Annotation | contamination score | M = **TBD** | — |
 | 6 · DE | biological replicates | K = **TBD** | **blocked** — replicate structure of GSE295590 unresolved |

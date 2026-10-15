@@ -5,6 +5,18 @@ entry. Newest first. Format: **ID · date · decision** — context — conseque
 
 ---
 
+### D-009 · 2026-10-15 · First QC run on the deposited GSE295590 matrices
+- **Context:** first report-only run on the real data
+  ([`reports/qc/03_qc_report.md`](../reports/qc/03_qc_report.md)). Cell counts reproduce the earlier
+  inspection exactly (9,012 / 838 / 8,677).
+- **Findings:** matrices pre-filtered at ≈ 500 UMI; S1 sequenced ~5.6× shallower than S2/S3;
+  S3 carries a ~10 % damaged high-mito cloud; scrublet auto-threshold failed (0 % doublets in S1, S3).
+- **Decision:** `remove_predicted_doublets: false` — doublets are assessed at cluster level in
+  Phase 5. Threshold values proposed in [`qc_threshold_proposal.md`](qc_threshold_proposal.md),
+  **pending Divya's review** (will be logged as D-010 once agreed).
+- **Consequence:** depth becomes an explicit confounder for Phase 4 normalisation and a
+  downsampling sensitivity analysis is added to Phase 11.
+
 ### D-008 · 2026-10-15 · Phase 3 QC runs report-only until thresholds are agreed
 - **Context:** Phase 0 thresholds X/Y are not yet agreed; S2 is small and S3 mito-rich.
 - **Decision:** Script 03 removes no cells while any `phase3_qc` threshold is `null`. It flags

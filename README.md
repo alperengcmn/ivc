@@ -6,7 +6,7 @@
 
 ![status](https://img.shields.io/badge/status-Phase%203%20·%20QC-blue)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776AB)
-![tests](https://img.shields.io/badge/tests-24%20passing-brightgreen)
+![tests](https://img.shields.io/badge/tests-26%20passing-brightgreen)
 ![claims](https://img.shields.io/badge/claims-evidence--scoped-8A2BE2)
 
 [Question](#-scientific-question) ·
@@ -106,7 +106,8 @@ Full phase table with outputs and gates → [`docs/pipeline.md`](docs/pipeline.m
 | ✅ | Accession crosswalk validated: 3 GEO samples → 3 BioSamples → 3 SRA Experiments → 6 SRR runs |
 | ❓ | **Mouse-to-library mapping and pre-library pooling unresolved** — query to authors drafted ([`docs/author_query.md`](docs/author_query.md)) |
 | ⏸ | Formal differential expression blocked until replicate structure is known ([D-004](docs/decision_log.md)) |
-| 🔄 | Phase 3 QC (`make qc`) runs in report-only mode: flags low recovery (S2 ≈ 838 cells) and elevated mito (S3) without removing cells, until thresholds are agreed ([D-008](docs/decision_log.md)) |
+| ✅ | Data downloaded and checksummed; cell counts reproduced exactly (9,012 / 838 / 8,677) |
+| 🔄 | Phase 3 QC run: matrices pre-filtered at ≈ 500 UMI, **S1 sequenced ~5.6× shallower**, ~10 % damaged cells in S3, scrublet auto-threshold failed. Thresholds proposed, awaiting review → [`docs/qc_threshold_proposal.md`](docs/qc_threshold_proposal.md) |
 
 Details → [`docs/GSE295590_design.md`](docs/GSE295590_design.md)
 
@@ -128,7 +129,7 @@ conda activate ilc2-tri
 # — or — lightweight, validators + tests only
 python -m pip install -e ".[dev]"
 
-make test        # 24 tests
+make test        # 26 tests
 make validate    # Scripts 01 + 02 → reports/validation/
 make fetch       # Phase 2: download GSE295590 matrices into data/raw/
 make qc          # Phase 3: QC report → reports/qc/, outputs → results/qc/

@@ -147,3 +147,33 @@ def test_filter_mode_applies_thresholds(raw_dir, params, tmp_path):
 
 def test_missing_raw_dir_exits_2(tmp_path, params):
     assert qc.main(["--raw-dir", str(tmp_path / "nope"), "--params", str(params())]) == 2
+
+
+def _summary(**cols):
+    import pandas as pd
+
+    base = {
+        "n_cells": [9012, 838, 8677],
+        "cells_vs_median": [1.04, 0.10, 1.0],
+        "min_total_counts": [505.0, 533.0, 500.0],
+        "median_total_counts": [1283.0, 7160.0, 7215.0],
+        "median_pct_mt": [2.0, 2.3, 3.7],
+        "pct_cells_mt_gt20": [0.0, 1.4, 10.1],
+        "pct_predicted_doublet": [0.0, 1.2, 0.0],
+    }
+    base.update(cols)
+    return pd.DataFrame(base, index=list(SPEC))
+
+
+def test_dataset_notes_flag_depth_and_prefilter():
+    notes = " ".join(qc.dataset_notes(_summary()))
+    assert "Sequencing depth differs 5.6×" in notes
+    assert "already filtered" in notes
+
+
+def test_sample_notes_flag_silent_scrublet_and_mito_tail():
+    notes = " ".join(qc.sample_notes(_summary()))
+    assert "GSM8953514" in notes and "automatic threshold" in notes
+    assert "10.1 % of cells" in notes
+    assert "9,012 cells" in notes  # integer formatting
+    assert "unreliable" not in notes  # S2 has 838 cells, above the scrublet minimum
