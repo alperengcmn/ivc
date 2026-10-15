@@ -17,6 +17,11 @@ results/**/*
 !results/**/
 !results/**/.gitkeep
 
+# references/: downloaded resources are re-creatable; keep only the manifest
+references/*
+!references/.gitkeep
+!references/manifest.tsv
+
 # Validation reports ARE committed: they are small, reviewable evidence.
 
 # --- python ---
