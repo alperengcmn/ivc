@@ -1,0 +1,43 @@
+# --- data: never committed (re-downloadable from GEO/SRA) ---
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.h5ad
+*.rds
+*.loom
+*.mtx
+*.mtx.gz
+*.tar
+*.fastq*
+*.bam
+
+# --- generated results: keep the folder layout, not the outputs ---
+results/**/*
+!results/**/
+!results/**/.gitkeep
+
+# Validation reports ARE committed: they are small, reviewable evidence.
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+
+# --- notebooks ---
+.ipynb_checkpoints/
+
+# --- editors / OS ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+.idea/
+.DS_Store
+Thumbs.db

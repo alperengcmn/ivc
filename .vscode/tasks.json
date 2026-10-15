@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ILC2: validate sample metadata (Script 01)",
+      "type": "shell",
+      "command": "python scripts/01_validate_sample_metadata.py metadata/GSE295590/samples.tsv --report reports/validation/01_sample_metadata.md",
+      "problemMatcher": []
+    },
+    {
+      "label": "ILC2: validate GEO-SRA crosswalk (Script 02)",
+      "type": "shell",
+      "command": "python scripts/02_validate_geo_sra_crosswalk.py metadata/GSE295590/sra_crosswalk.tsv --report reports/validation/02_geo_sra_crosswalk.md",
+      "problemMatcher": []
+    },
+    {
+      "label": "ILC2: run all validations",
+      "dependsOn": [
+        "ILC2: validate sample metadata (Script 01)",
+        "ILC2: validate GEO-SRA crosswalk (Script 02)"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "ILC2: run tests",
+      "type": "shell",
+      "command": "python -m pytest",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    }
+  ]
+}

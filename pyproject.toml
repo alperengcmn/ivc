@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ilc2tri"
+version = "0.1.0"
+description = "Lung ILC2 trained/recall-associated transcriptional signatures: a reproducible, replicate-aware single-cell reanalysis."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Alperen Göçmen" },
+  { name = "Divya" },
+]
+# The Phase 1 validators use the standard library only, so they run anywhere.
+# Analysis dependencies (Scanpy etc.) live in environment.yml.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.4"]
+
+[project.scripts]
+ilc2-validate-samples = "ilc2tri.validate_samples:main"
+ilc2-validate-crosswalk = "ilc2tri.validate_crosswalk:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+# E501: line length is enforced by `ruff format`; RUF001: en dashes in report text are intentional.
+ignore = ["E501", "RUF001"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["RUF005"]

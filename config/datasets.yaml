@@ -1,0 +1,64 @@
+# Dataset registry — the single place where each dataset's role is declared.
+# Roles and caveats follow docs/datasets.md. Change a role here only with a
+# matching entry in docs/decision_log.md.
+
+GSE295590:
+  role: discovery            # primary trained/recall-associated reference
+  priority: core
+  organism: Mus musculus
+  tissue: lung
+  model: Nippostrongylus brasiliensis, primary vs secondary infection (day 3 each)
+  assay: scRNA-seq (10x Genomics Chromium 3')
+  data_level: processed matrices (matrix.mtx / barcodes / features per sample)
+  caveats:
+    - primary-vs-secondary comparison mixes prior exposure with the rechallenge response
+    - mouse-to-library mapping and pre-library pooling are UNRESOLVED (see docs/GSE295590_design.md)
+  publication: https://pmc.ncbi.nlm.nih.gov/articles/PMC13382995/
+
+GSE172258:
+  role: validation           # independent memory-ILC2 model with a chromatin layer
+  priority: core
+  model: repeated Alternaria allergen exposure (memory ILC2)
+  assay: scRNA-seq + ATAC-seq
+  caveats:
+    - allergen vs helminth model; expect conserved programs, not identical gene lists
+
+GSE81700:
+  role: validation           # signature-level only
+  priority: high
+  model: naive / IL-33-activated / long-lived memory-like lung ILC2
+  assay: microarray
+  caveats:
+    - microarray; no direct expression-value integration with scRNA-seq
+
+GSE149857:
+  role: acute_reference      # separates acute activation / tissue repair from recall features
+  priority: core
+  model: influenza infection, lung ILCs
+  assay: scRNA-seq
+
+GSE149854:
+  role: mechanistic_context  # BATF-dependent regulatory programs
+  priority: high
+  model: influenza, WT vs Batf KO lung ILC2 (3 replicates per group)
+  assay: bulk RNA-seq
+
+GSE262210:
+  role: metabolic_context
+  priority: supporting
+  model: iron availability / metabolism in activated lung ILC2
+  assay: to be confirmed in Phase 1
+
+GSE291230:
+  role: regulatory_context
+  priority: supporting
+  pair: GSE291231
+  model: IL-9 / Blimp-1 regulation of ILC2 identity in allergic asthma
+  assay: ATAC-seq
+
+GSE291231:
+  role: regulatory_context
+  priority: supporting
+  pair: GSE291230
+  model: IL-9 / Blimp-1 regulation of ILC2 identity in allergic asthma
+  assay: RNA-seq

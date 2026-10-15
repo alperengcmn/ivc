@@ -1,0 +1,33 @@
+# Conda environment for the ILC2 project.
+#   conda env create -f environment.yml
+#   conda activate ilc2-tri
+#
+# Heavy, optional stages (pySCENIC in Phase 8, ATAC tooling in Phase 9) get their own
+# environment files when we reach them, so this one stays fast to solve.
+name: ilc2-tri
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  # core single-cell stack (Phases 3–7)
+  - scanpy>=1.10          # includes sc.pp.scrublet for doublet scoring
+  - anndata
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - seaborn
+  - harmonypy             # batch evaluation/correction, only when justified (Phase 4)
+  - decoupler-py          # pseudobulk, TF / pathway activity (Phases 6–8)
+  - gseapy                # GSEA / ORA (Phase 7)
+  - pyyaml
+  # workflow & notebooks
+  - jupyterlab
+  - ipykernel
+  # quality
+  - pytest
+  - ruff
+  - pip
+  - pip:
+      - -e .
