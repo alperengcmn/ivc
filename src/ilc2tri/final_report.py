@@ -218,6 +218,39 @@ def render(d: dict) -> str:
         return f"{g} {r['pb_log2fc_A']:+.2f} / {r['pb_log2fc_B']:+.2f} ({state})"
 
     pub_sentence = "; ".join(describe(g) for g in ("Areg", "Csf2", "Il2ra", "Tph1"))
+
+    def row(dataset: str, key: str):
+        m = val[(val["dataset"] == dataset) & val["comparison"].str.contains(key, regex=False)]
+        return m.iloc[0] if len(m) else None
+
+    def agree(r) -> str:
+        return (
+            "n/a"
+            if r is None
+            else f"{int(r['genes_agree'])}/{int(r['genes_n_genes'])} genes agree, *{r['verdict']}*"
+        )
+
+    il33_d4, il33_w2, il33_4m = (
+        row("GSE81700", "day 4"),
+        row("GSE81700", "week 2"),
+        row("GSE81700", "4 months"),
+    )
+    alt_recall = row("GSE172258 RNA", "after recall")
+    il33_shared = il33_d4 is not None and il33_d4["genes_p"] < 0.05
+    long_lived_supported = il33_4m is not None and il33_4m["verdict"] in (
+        "Replicated",
+        "Partially supported",
+    )
+    h3_text = (
+        f"**Partly** — not shared with influenza-driven activation (0 acute-shared genes; {n_opp} opposite), but "
+        f"strongly shared with IL-33-driven activation (GSE81700 day 4: {agree(il33_d4)})"
+        if il33_shared
+        else f"**Supported** — 0 signature genes are acute-shared on both days of influenza; {n_opp} move opposite"
+    )
+    h2_detail = (
+        f"support comes from recently activated ILC2s (IL-33 day 4: {agree(il33_d4)}; week 2: {agree(il33_w2)}), "
+        f"not from long-lived memory (4 months: {agree(il33_4m)}; Alternaria 1 week after recall: {agree(alt_recall)})"
+    )
     qc_tbl = qc[
         ["n_cells", "median_total_counts", "median_genes", "median_pct_mt", "pct_cells_mt_gt20"]
     ].copy()
@@ -248,7 +281,15 @@ def render(d: dict) -> str:
             "in Rag1⁻/⁻); memory transcriptome — "
             + "; ".join(f"{r.dataset} {r.comparison}: *{r.verdict}*" for r in val.itertuples())
             + ".",
-            "- **Claim level reached: A** — a trained/recall-associated transcriptional state with partial regulatory "
+            "- **Interpretation:** the signature tracks *recent* type-2 activation — "
+            + (
+                "it is strongly shared with IL-33-driven activation and fades over weeks"
+                if il33_shared and not long_lived_supported
+                else "see §9"
+            )
+            + " — so the secondary-response program looks like an intensified activation state rather than a "
+            "persistent memory signature.",
+            "- **Claim level reached: A** — a recall-associated transcriptional state with partial regulatory "
             "support (B, wild-type only). Classical trained immunity (C) is not claimed.",
             "",
             "## 1. Research question",
@@ -260,9 +301,9 @@ def render(d: dict) -> str:
             "|---|---|",
             f"| H1 — reproducible recall program in GSE295590 beyond composition | **Supported (exploratory)** — "
             f"{len(cand):,} concordant genes; {n_robust}/100 signature genes robust; retained in non-cycling ILC2s |",
-            f"| H2 — conserved in independent memory-like ILC2s | **{h2.capitalize()}** — see §9 |",
-            f"| H3 — not explained by acute activation alone | **Supported** — 0 signature genes are acute-shared on "
-            f"both days of influenza; {n_opp} move opposite to acute activation |",
+            f"| H2 — conserved in independent memory-like ILC2s | **{h2.capitalize()}** (pre-registered rule) — "
+            f"{h2_detail} |",
+            f"| H3 — not explained by acute activation alone | {h3_text} |",
             f"| H4 — TF / chromatin support | **Partial** — {len(tf)} target-supported TFs; ATAC: {atac_v.lower()} |",
             "| H5 — metabolic reprogramming | **Supported in discovery** — OXPHOS, glycolysis, MYC, mTORC1 up; "
             "signature responds to iron deprivation (§10) |",
@@ -371,9 +412,16 @@ def render(d: dict) -> str:
             "## 13. Conclusions supported by the data",
             "- Secondary-response lung ILC2s show a reproducible, metabolically active and proliferative recall program "
             "with reduced inflammatory/AP-1 signalling — **claim level A (recall-associated state)**.",
-            "- The program is distinct from acute influenza-driven activation and partially mirrored by chromatin "
-            "opening in wild-type allergen-memory ILC2s — **partial level B**.",
-            "- It is **not** independently reproduced in the GSE172258 memory transcriptome at one week after recall.",
+            "- It differs from influenza-driven activation but "
+            + (
+                "closely resembles IL-33-driven activation (day 4), weakening by week 2 and absent at 4 months"
+                if il33_shared and not long_lived_supported
+                else "see §9 for IL-33 activation"
+            )
+            + "; it is not reproduced in the Alternaria memory transcriptome one week after recall.",
+            "- Chromatin at signature genes opens in wild-type allergen-memory ILC2s (not Rag1⁻/⁻) — **partial level B**.",
+            "- Together, the data support an **intensified type-2 activation / recall state** in secondary ILC2s; they "
+            "do not show that this state persists as a resting memory program.",
             "- Classical trained immunity or epigenetic memory is **not** claimed.",
             "",
             "## 14. Reproducibility",

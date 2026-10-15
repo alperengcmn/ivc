@@ -2,16 +2,18 @@
 
 Pre-registered rules: [`docs/validation_plan.md`](../../docs/validation_plan.md) (D-014). Signature: `GSE295590_recall_ILC2_signature_v1.tsv`.
 
-## Overall: **Not supported**
+## Overall: **Partially supported**
 
 ## Core memory / recall datasets
 | dataset | comparison | units (test v ref) | Δ score | score p | gene agreement | up / down | gene p | verdict |
 |---|---|---|---|---|---|---|---|---|
 | GSE172258 RNA | after recall: Alt-sensitised (1B) vs saline (2B) | 279 v 202 | -0.0287 | 0.872 | 36/80 (0.45) | 22/39 / 14/41 | 0.843 | **Not supported** |
 | GSE172258 RNA | before recall: Alt-sensitised (1A) vs saline (2A) | 235 v 213 | 0.0166 | 0.312 | 44/80 (0.55) | 16/39 / 28/41 | 0.217 | **Not supported** |
-| GSE81700 | lung ILC2 memory-like vs naive | 0 v 0 | nan | n/a | 0/0 (nan) | - / - | 1 | **Not testable with available data** |
+| GSE81700 | lung ILC2 4 months after IL-33 vs naive | 2 v 2 | 0.203 | n/a | 46/93 (0.495) | 20/48 / 26/45 | 0.582 | **Not supported** |
+| GSE81700 | lung ILC2 week 2 after IL-33 vs naive | 3 v 2 | 0.311 | n/a | 55/93 (0.591) | 38/48 / 17/45 | 0.0483 | **Partially supported** |
+| GSE81700 | lung ILC2 day 4 after IL-33 vs naive | 3 v 2 | 1.86 | n/a | 69/93 (0.742) | 48/48 / 21/45 | 1.65e-06 | **Partially supported** |
 
-Notes: GSE172258 RNA — Δscore 20-cell wells -0.01, 40-cell wells -0.06; 929 wells ≥ 1000 UMI; GSE172258 RNA — Δscore 20-cell wells 0.04, 40-cell wells 0.00; 929 wells ≥ 1000 UMI; GSE81700 — platform annotation (references/GPL16570_symbols.tsv) not available
+Notes: GSE172258 RNA — Δscore 20-cell wells -0.01, 40-cell wells -0.06; 929 wells ≥ 1000 UMI; GSE172258 RNA — Δscore 20-cell wells 0.04, 40-cell wells 0.00; 929 wells ≥ 1000 UMI; GSE81700 — 16 arrays; lung only; GSE81700 — 16 arrays; lung only; GSE81700 — 16 arrays; lung only
 
 ## Acute-activation reference — GSE149857 (influenza, lung ILC2s)
 ILC2s analysed: day 5 179, day 10 395. Signature genes correlated with an acute activation axis (without signature genes) in the signature's direction on both days: **0** (recall_up 0/44, recall_down 0/44 measurable).

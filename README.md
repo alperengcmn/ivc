@@ -32,9 +32,10 @@
 | 🟢 | Secondary-response lung ILC2s carry a **reproducible metabolic–proliferative recall program** — OXPHOS, glycolysis, MYC and mTORC1 up; NF-κB/TNFα, JAK-STAT and AP-1 activity down. Two contrasts that share no primary cells agree genome-wide (r ≈ 0.9). | **A** · exploratory |
 | 🟢 | The source study's reported genes **Arg1, Cox5a, Pkm** are reproduced; **Csf2** is strongly *down* (reported unchanged). | A |
 | 🟢 | A **100-gene signature was frozen** (SHA-256 in `signatures/MANIFEST.tsv`) before any validation data were analysed; 97/100 genes survive ≥ 80 % of sensitivity scenarios, including the source study's own QC. | A |
-| 🟢 | The program is **not acute activation**: no signature gene tracks influenza-driven ILC2 activation; Calca, Csf2 and Plaur move *opposite* to it. | A |
+| 🟡 | The program is **not influenza-type activation** (no signature gene tracks it; Calca, Csf2, Plaur move *opposite*) but **closely mirrors IL-33-driven activation**: all 48 measurable up-genes rise 4 days after IL-33, the match weakens by week 2 and is gone at 4 months. | A |
 | 🟡 | **Chromatin support in wild-type allergen-memory ILC2s** (signature genes open, p ≈ 10⁻⁹) but not in Rag1⁻/⁻ — *partial regulatory support* under the pre-registered rule. | partial **B** |
-| 🔴 | **Not reproduced** in the GSE172258 memory transcriptome sampled one week after recall (pre-registered verdict: *Not supported*). | — |
+| 🔴 | **Not reproduced in long-lived memory**: GSE172258 one week after recall and GSE81700 at 4 months — pre-registered verdict *Not supported*. | — |
+| 💡 | **Interpretation:** secondary ILC2s show an *intensified type-2 activation / recall state*, not a persistent resting memory program. | — |
 | ⚠️ | The published analysis appears to use **only one of two primary libraries** (189 published vs 197 ILC2s in S2 at the paper's QC); the other (S1) is 5.6× shallower and carries ambient/stress signal. | data audit |
 
 **Not claimed:** classical trained immunity or causal epigenetic memory (level C). One secondary library and an
@@ -67,7 +68,7 @@ datasets under **rules written down before the validation data were opened**.
 | 🔴 **GSE295590** | **Discovery** | *N. brasiliensis* primary vs secondary (day 3) · 10x scRNA-seq | signature v1 |
 | 🔴 **GSE172258** | Memory validation + chromatin | Repeated *Alternaria* · 20/40-cell mini-bulk RNA + ATAC-seq | RNA: not supported · ATAC: partial |
 | 🔴 **GSE149857** | Acute reference | Influenza day 5 / 10 · scRNA-seq | not acute-shared |
-| 🟠 GSE81700 | Memory-like validation | IL-33, naive → 4 months · microarray | see final report |
+| 🟠 GSE81700 | Memory-like validation | IL-33, naive → 4 months · microarray | day 4 / week 2 partial · 4 months not supported |
 | 🟠 GSE149854 | BATF context | Influenza, WT vs *Batf* KO · bulk RNA-seq | not BATF-dependent |
 | 🟡 GSE262210 | Metabolic context | Iron deprivation · bulk RNA-seq | up-genes iron-responsive |
 | 🟡 GSE291231 | Blimp-1 / stimulation context | bulk RNA-seq | enriched in Blimp-1 KO |

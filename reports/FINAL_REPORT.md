@@ -1,14 +1,15 @@
 # Lung ILC2 trained/recall-associated programs — final report
 
-*Generated automatically by `scripts/12_final_report.py` on 2026-10-15 10:13 UTC from commit `71f8b9d`. Every number below is read from `results/`. Thresholds marked PROVISIONAL await Divya's review (D-010).*
+*Generated automatically by `scripts/12_final_report.py` on 2026-10-15 10:18 UTC from commit `94dce71`. Every number below is read from `results/`. Thresholds marked PROVISIONAL await Divya's review (D-010).*
 
 ## Summary
 
 - Secondary-response lung ILC2s from *N. brasiliensis* rechallenge (GSE295590) carry a reproducible program: **883 genes** change concordantly in two contrasts that share no primary cells (effect sizes r = 0.91); the published findings for **Arg1, Cox5a and Pkm** are reproduced.
 - The program is metabolic and proliferative (up: OXIDATIVE_PHOSPHORYLATION, MYC_TARGETS_V1, E2F_TARGETS, DNA_REPAIR, MTORC1_SIGNALING, G2M_CHECKPOINT) with lower HYPOXIA, ESTROGEN_RESPONSE_EARLY, TNFA_SIGNALING_VIA_NFKB signalling; inferred TF activity: Myc up; Rela, Stat5a, Runx1, Stat1, Ets1, Stat2 down.
 - A 100-gene signature was frozen before validation (SHA-256 `537d38d95778…`). It is robust internally (97/100 genes survive ≥ 80 % of sensitivity scenarios, including the source study's own QC).
-- Independent evidence is **mixed**: chromatin — *Partial regulatory support* (strong in wild-type allergen memory, absent in Rag1⁻/⁻); memory transcriptome — GSE172258 RNA after recall: Alt-sensitised (1B) vs saline (2B): *Not supported*; GSE172258 RNA before recall: Alt-sensitised (1A) vs saline (2A): *Not supported*; GSE81700 lung ILC2 memory-like vs naive: *Not testable with available data*.
-- **Claim level reached: A** — a trained/recall-associated transcriptional state with partial regulatory support (B, wild-type only). Classical trained immunity (C) is not claimed.
+- Independent evidence is **mixed**: chromatin — *Partial regulatory support* (strong in wild-type allergen memory, absent in Rag1⁻/⁻); memory transcriptome — GSE172258 RNA after recall: Alt-sensitised (1B) vs saline (2B): *Not supported*; GSE172258 RNA before recall: Alt-sensitised (1A) vs saline (2A): *Not supported*; GSE81700 lung ILC2 4 months after IL-33 vs naive: *Not supported*; GSE81700 lung ILC2 week 2 after IL-33 vs naive: *Partially supported*; GSE81700 lung ILC2 day 4 after IL-33 vs naive: *Partially supported*.
+- **Interpretation:** the signature tracks *recent* type-2 activation — it is strongly shared with IL-33-driven activation and fades over weeks — so the secondary-response program looks like an intensified activation state rather than a persistent memory signature.
+- **Claim level reached: A** — a recall-associated transcriptional state with partial regulatory support (B, wild-type only). Classical trained immunity (C) is not claimed.
 
 ## 1. Research question
 What distinguishes a trained/persistent ILC2 state from an acutely activated ILC2 state, and which transcriptional, metabolic and regulatory programs are associated with it? Hypotheses H1–H5: [`docs/00_hypothesis_and_success_criteria.md`](../docs/00_hypothesis_and_success_criteria.md).
@@ -16,8 +17,8 @@ What distinguishes a trained/persistent ILC2 state from an acutely activated ILC
 | Hypothesis | Outcome |
 |---|---|
 | H1 — reproducible recall program in GSE295590 beyond composition | **Supported (exploratory)** — 883 concordant genes; 97/100 signature genes robust; retained in non-cycling ILC2s |
-| H2 — conserved in independent memory-like ILC2s | **Not supported in the testable comparisons** — see §9 |
-| H3 — not explained by acute activation alone | **Supported** — 0 signature genes are acute-shared on both days of influenza; 3 move opposite to acute activation |
+| H2 — conserved in independent memory-like ILC2s | **Partially supported** (pre-registered rule) — support comes from recently activated ILC2s (IL-33 day 4: 69/93 genes agree, *Partially supported*; week 2: 55/93 genes agree, *Partially supported*), not from long-lived memory (4 months: 46/93 genes agree, *Not supported*; Alternaria 1 week after recall: 36/80 genes agree, *Not supported*) |
+| H3 — not explained by acute activation alone | **Partly** — not shared with influenza-driven activation (0 acute-shared genes; 3 opposite), but strongly shared with IL-33-driven activation (GSE81700 day 4: 69/93 genes agree, *Partially supported*) |
 | H4 — TF / chromatin support | **Partial** — 14 target-supported TFs; ATAC: partial regulatory support |
 | H5 — metabolic reprogramming | **Supported in discovery** — OXPHOS, glycolysis, MYC, mTORC1 up; signature responds to iron deprivation (§10) |
 
@@ -93,7 +94,9 @@ TFs named by the GSE172258 study that are concordant and target-supported here: 
 |---|---|---|---|---|---|---|---|
 | GSE172258 RNA | after recall: Alt-sensitised (1B) vs saline (2B) | -0.0287 | 0.872 | 36 | 80 | 0.843 | Not supported |
 | GSE172258 RNA | before recall: Alt-sensitised (1A) vs saline (2A) | 0.0166 | 0.312 | 44 | 80 | 0.217 | Not supported |
-| GSE81700 | lung ILC2 memory-like vs naive |  |  | 0 | 0 | 1 | Not testable with available data |
+| GSE81700 | lung ILC2 4 months after IL-33 vs naive | 0.203 |  | 46 | 93 | 0.582 | Not supported |
+| GSE81700 | lung ILC2 week 2 after IL-33 vs naive | 0.311 |  | 55 | 93 | 0.0483 | Partially supported |
+| GSE81700 | lung ILC2 day 4 after IL-33 vs naive | 1.86 |  | 69 | 93 | 1.65e-06 | Partially supported |
 
 Interpretation, not part of the verdict: GSE172258 wells were sampled one week after recall versus three days in the discovery data; an early recall program may have subsided. The strong wild-type ATAC result versus the null Rag1⁻/⁻ result suggests the chromatin component may depend on adaptive-immune context.
 
@@ -132,11 +135,12 @@ Influenza (GSE149857): no signature gene is acute-shared on both days; 3 move op
 
 ## 13. Conclusions supported by the data
 - Secondary-response lung ILC2s show a reproducible, metabolically active and proliferative recall program with reduced inflammatory/AP-1 signalling — **claim level A (recall-associated state)**.
-- The program is distinct from acute influenza-driven activation and partially mirrored by chromatin opening in wild-type allergen-memory ILC2s — **partial level B**.
-- It is **not** independently reproduced in the GSE172258 memory transcriptome at one week after recall.
+- It differs from influenza-driven activation but closely resembles IL-33-driven activation (day 4), weakening by week 2 and absent at 4 months; it is not reproduced in the Alternaria memory transcriptome one week after recall.
+- Chromatin at signature genes opens in wild-type allergen-memory ILC2s (not Rag1⁻/⁻) — **partial level B**.
+- Together, the data support an **intensified type-2 activation / recall state** in secondary ILC2s; they do not show that this state persists as a resting memory program.
 - Classical trained immunity or epigenetic memory is **not** claimed.
 
 ## 14. Reproducibility
-- Code commit `71f8b9d`; environment `environment.yml`; software: python 3.13.16, scanpy 1.12.4, anndata 0.13.4, numpy 2.5.3, pandas 3.0.5, scipy 1.18.1, decoupler 2.2.0, gseapy 1.3.1, pydeseq2 0.5.4, leidenalg 0.12.0.
+- Code commit `94dce71`; environment `environment.yml`; software: python 3.13.16, scanpy 1.12.4, anndata 0.13.4, numpy 2.5.3, pandas 3.0.5, scipy 1.18.1, decoupler 2.2.0, gseapy 1.3.1, pydeseq2 0.5.4, leidenalg 0.12.0.
 - Random seed 0; all parameters in `config/`; decisions in `docs/decision_log.md`; downloads with SHA-256 in `data/raw/*/manifest.tsv` and `references/manifest.tsv`.
 - Re-run everything: `make all` (raw data → this report).

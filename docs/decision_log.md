@@ -5,6 +5,16 @@ entry. Newest first. Format: **ID · date · decision** — context — conseque
 
 ---
 
+### D-015 · 2026-10-15 · Implementation fixes after the first Phase 10 run (no rule changed)
+- **What was fixed:** (1) the GSE172258 well-group pattern expected `_1A_` but column names use
+  `.1A_`, so the first run found no groups and returned *Not testable*; (2) the GSE149854 author table
+  keeps gene symbols in its first column (`Gene_name` holds descriptions), so the first run matched no
+  genes; (3) GSE81700 required a platform table that is only distributed as a > 300 MB file — the fetcher
+  now streams it and keeps ID → symbol.
+- **What did not change:** metrics, comparisons, thresholds and verdict rules in
+  [`validation_plan.md`](validation_plan.md). All reported verdicts come from the corrected code under the
+  original rules.
+
 ### D-014 · 2026-10-15 · Validation plan pre-registered
 - **Decision:** metrics, comparisons and verdict rules for Phases 9–10 are fixed in
   [`validation_plan.md`](validation_plan.md) and committed before any validation-dataset values are
