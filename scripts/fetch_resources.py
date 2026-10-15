@@ -7,7 +7,7 @@
 * CollecTRI TF→target network (mouse) — via decoupler / OmniPath
 * PROGENy pathway footprints (mouse, top 500) — via decoupler / OmniPath
 * UCSC mm10 refGene — gene coordinates / TSS for peak-to-gene linkage (Phase 9)
-* GEO GPL16570 platform table — Affymetrix MoGene 2.0 probe → gene symbol (GSE81700)
+* GEO GPL16570 — MoGene 2.0 probe → gene symbol, streamed and reduced to two columns (GSE81700)
 
 Each file is written with a sidecar line in references/manifest.tsv (source, version, SHA-256).
 """
@@ -66,13 +66,6 @@ PLAIN = {
     "ucsc_mm10_refGene.txt.gz": [
         ("https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz", "mm10"),
     ],
-    # Platform table only (not the multi-GB family SOFT, which embeds every sample on the platform).
-    "GPL16570_table.txt": [
-        (
-            "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL16570&targ=self&form=text&view=data",
-            "GEO GPL16570 platform table",
-        ),
-    ],
 }
 
 
@@ -115,6 +108,57 @@ def plain_files() -> bool:
     return ok
 
 
+GPL_URL = (
+    "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL16570&targ=self&form=text&view=data"
+)
+
+
+def gpl_symbols() -> bool:
+    """Stream the GPL16570 platform table (> 300 MB, mostly GO text) and keep only ID -> gene symbol."""
+    dest = REF / "GPL16570_symbols.tsv"
+    if dest.exists():
+        print(f"  [have] {dest.name}")
+        return True
+    req = urllib.request.Request(GPL_URL, headers=UA)
+    tmp = dest.with_suffix(".tsv.part")
+    n_in = n_out = 0
+    header, gi, last_report = None, None, 0
+    try:
+        with urllib.request.urlopen(req, timeout=300) as r, tmp.open("w") as out:
+            out.write("ID\tgene_symbol\n")
+            for raw in r:
+                n_in += len(raw)
+                line = raw.decode("utf-8", "replace").rstrip("\n")
+                if header is None:
+                    if line.startswith("ID\t"):
+                        header = line.split("\t")
+                        gi = header.index("gene_assignment")
+                    continue
+                f = line.split("\t")
+                if len(f) <= gi or not f[0].isdigit():
+                    continue
+                parts = f[gi].split(" // ")
+                if len(parts) > 1 and parts[1].strip():
+                    out.write(f"{f[0]}\t{parts[1].strip()}\n")
+                    n_out += 1
+                if n_in - last_report > 20_000_000:
+                    last_report = n_in
+                    print(
+                        f"\r  ... streamed {n_in / 1e6:.0f} MB, {n_out:,} probes kept",
+                        end="",
+                        flush=True,
+                    )
+        print()
+        if header is None or n_out < 10_000:
+            raise RuntimeError(f"unexpected response ({n_out} probes) — blocked or captcha page?")
+        tmp.replace(dest)
+        record(dest, GPL_URL, f"GEO GPL16570 ID-to-symbol ({n_out:,} probes)")
+        return True
+    except Exception as exc:
+        print(f"\n  [FAIL] GPL16570: {type(exc).__name__}: {exc}")
+        return False
+
+
 def _decoupler_net(kind: str):
     import decoupler as dc
 
@@ -151,7 +195,8 @@ def main() -> int:
     b = networks()
     print("== Genome annotation / array platforms")
     c = plain_files()
-    return 0 if a and b and c else 1
+    d = gpl_symbols()
+    return 0 if a and b and c and d else 1
 
 
 if __name__ == "__main__":
