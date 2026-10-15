@@ -7,7 +7,7 @@
 * CollecTRI TF→target network (mouse) — via decoupler / OmniPath
 * PROGENy pathway footprints (mouse, top 500) — via decoupler / OmniPath
 * UCSC mm10 refGene — gene coordinates / TSS for peak-to-gene linkage (Phase 9)
-* GEO GPL16570 platform SOFT — Affymetrix MoGene 2.0 probe → gene symbol (GSE81700)
+* GEO GPL16570 platform table — Affymetrix MoGene 2.0 probe → gene symbol (GSE81700)
 
 Each file is written with a sidecar line in references/manifest.tsv (source, version, SHA-256).
 """
@@ -60,32 +60,57 @@ def msigdb() -> bool:
     return ok
 
 
+MAX_BYTES = 200_000_000  # never stream more than this for a single resource
+UA = {"User-Agent": "Mozilla/5.0 (ilc2-trained-immunity fetch_resources)"}
 PLAIN = {
-    "ucsc_mm10_refGene.txt.gz": (
-        "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz",
-        "mm10",
-    ),
-    # No curated .annot exists for GPL16570; the family SOFT file carries the gene_assignment column.
-    "GPL16570_family.soft.gz": (
-        "https://ftp.ncbi.nlm.nih.gov/geo/platforms/GPL16nnn/GPL16570/soft/GPL16570_family.soft.gz",
-        "GEO GPL16570",
-    ),
+    "ucsc_mm10_refGene.txt.gz": [
+        ("https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz", "mm10"),
+    ],
+    # Platform table only (not the multi-GB family SOFT, which embeds every sample on the platform).
+    "GPL16570_table.txt": [
+        (
+            "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL16570&targ=self&form=text&view=data",
+            "GEO GPL16570 platform table",
+        ),
+    ],
 }
+
+
+def stream(url: str, dest: Path) -> None:
+    req = urllib.request.Request(url, headers=UA)
+    done = 0
+    tmp = dest.with_suffix(dest.suffix + ".part")
+    with urllib.request.urlopen(req, timeout=120) as r, tmp.open("wb") as fh:
+        while chunk := r.read(1 << 20):
+            done += len(chunk)
+            if done > MAX_BYTES:
+                raise RuntimeError(f"aborted: > {MAX_BYTES // 1_000_000} MB (wrong file?)")
+            fh.write(chunk)
+            print(f"\r  ... {dest.name}: {done / 1e6:.1f} MB", end="", flush=True)
+    print()
+    tmp.replace(dest)
 
 
 def plain_files() -> bool:
     ok = True
-    for name, (url, version) in PLAIN.items():
+    for name, sources in PLAIN.items():
         dest = REF / name
         if dest.exists():
             print(f"  [have] {name}")
             continue
-        try:
-            with urllib.request.urlopen(url, timeout=120) as r:
-                dest.write_bytes(r.read())
-            record(dest, url, version)
-        except Exception as exc:
-            print(f"  [FAIL] {name}: {type(exc).__name__}: {exc}")
+        for url, version in sources:
+            try:
+                stream(url, dest)
+                if name.endswith(".txt") and b"ID" not in dest.read_bytes()[:20000]:
+                    dest.unlink()
+                    raise RuntimeError(
+                        "response is not a platform table (blocked or captcha page?)"
+                    )
+                record(dest, url, version)
+                break
+            except Exception as exc:
+                print(f"  [FAIL] {name} from {url}: {type(exc).__name__}: {exc}")
+        else:
             ok = False
     return ok
 
