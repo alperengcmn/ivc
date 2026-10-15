@@ -6,6 +6,8 @@
 * MSigDB mouse collections (MH hallmark, M2 Reactome) — GMT, from the Broad release server
 * CollecTRI TF→target network (mouse) — via decoupler / OmniPath
 * PROGENy pathway footprints (mouse, top 500) — via decoupler / OmniPath
+* UCSC mm10 refGene — gene coordinates / TSS for peak-to-gene linkage (Phase 9)
+* GEO GPL16570 annotation — Affymetrix MoGene 2.0 probe → gene symbol (GSE81700)
 
 Each file is written with a sidecar line in references/manifest.tsv (source, version, SHA-256).
 """
@@ -58,6 +60,35 @@ def msigdb() -> bool:
     return ok
 
 
+PLAIN = {
+    "ucsc_mm10_refGene.txt.gz": (
+        "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz",
+        "mm10",
+    ),
+    "GPL16570.annot.gz": (
+        "https://ftp.ncbi.nlm.nih.gov/geo/platforms/GPL16nnn/GPL16570/annot/GPL16570.annot.gz",
+        "GEO GPL16570",
+    ),
+}
+
+
+def plain_files() -> bool:
+    ok = True
+    for name, (url, version) in PLAIN.items():
+        dest = REF / name
+        if dest.exists():
+            print(f"  [have] {name}")
+            continue
+        try:
+            with urllib.request.urlopen(url, timeout=120) as r:
+                dest.write_bytes(r.read())
+            record(dest, url, version)
+        except Exception as exc:
+            print(f"  [FAIL] {name}: {type(exc).__name__}: {exc}")
+            ok = False
+    return ok
+
+
 def _decoupler_net(kind: str):
     import decoupler as dc
 
@@ -92,7 +123,9 @@ def main() -> int:
     a = msigdb()
     print("== TF / pathway networks")
     b = networks()
-    return 0 if a and b else 1
+    print("== Genome annotation / array platforms")
+    c = plain_files()
+    return 0 if a and b and c else 1
 
 
 if __name__ == "__main__":
