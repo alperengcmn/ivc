@@ -5,7 +5,7 @@ META        := metadata/GSE295590
 REPORTS     := reports/validation
 
 .DEFAULT_GOAL := help
-.PHONY: help env install validate validate-samples validate-crosswalk test lint format fetch fetch-all fetch-resources qc embed annotate de pathways tf clean
+.PHONY: help env install validate validate-samples validate-crosswalk test lint format fetch fetch-all fetch-resources qc embed annotate de pathways tf chromatin validate-external robustness clean
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-20s\033[0m %s\n",$$1,$$2}'
@@ -59,6 +59,15 @@ pathways: ## Phase 7 — GSEA + freeze discovery signature (signatures/)
 
 tf: ## Phase 8 — TF and pathway activity (decoupler ULM)
 	$(PY) scripts/08_tf_activity.py
+
+chromatin: ## Phase 9 — GSE172258 ATAC vs frozen signature
+	$(PY) scripts/09_chromatin.py
+
+validate-external: ## Phase 10 — cross-dataset validation of the frozen signature
+	$(PY) scripts/10_validate.py
+
+robustness: ## Phase 11 — sensitivity analyses of the frozen signature
+	$(PY) scripts/11_robustness.py
 
 clean: ## Remove caches (never touches data/ or results/)
 	find . -type d \( -name __pycache__ -o -name .pytest_cache -o -name .ruff_cache \) -prune -exec rm -rf {} +
