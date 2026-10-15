@@ -373,7 +373,8 @@ def context(up, down):
             "dataset": "GSE149854",
             "question": "recall_up genes reduced in Batf KO (BATF-dependent)",
             **f,
-            "note": f"authors' DESeq2 table; log2FC = KO/WT (sign check {sign_ok:.0%})",
+            "note": f"authors' DESeq2 table (appears pre-filtered); log2FC orientation inferred from FPKM means: "
+            f"{'KO/WT' if sign_ok > 0.9 else 'WT/KO'}",
         }
     )
     # GSE262210 — iron deprivation (DEF vs vehicle)

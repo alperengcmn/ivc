@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ilc2tri"
-version = "0.3.1"
+version = "1.0.0"
 description = "Lung ILC2 trained/recall-associated transcriptional signatures: a reproducible, replicate-aware single-cell reanalysis."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -18,7 +18,8 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "ruff>=0.4"]
-analysis = ["scanpy>=1.10", "anndata", "pyyaml", "matplotlib", "scikit-image"]
+analysis = ["scanpy>=1.10", "anndata", "pyyaml", "matplotlib", "scikit-image", "scikit-learn", "leidenalg",
+            "igraph", "statsmodels", "gseapy", "openpyxl", "decoupler>=2.0", "pydeseq2>=0.5"]
 
 [project.scripts]
 ilc2-validate-samples = "ilc2tri.validate_samples:main"

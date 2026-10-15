@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0] — 2026-10-15 — complete pipeline, under collaborator review
+
+### Added
+- Phases 4–12: depth-matched embedding with stability-selected resolution; marker-category lineage
+  annotation and reference-library subset test; exploratory library-consistency DE; GSEA and the
+  frozen, hashed signature v1; CollecTRI/PROGENy activity; GSE172258 ATAC integration; pre-registered
+  cross-dataset validation (GSE172258, GSE81700, GSE149857, GSE149854, GSE262210, GSE291231);
+  sensitivity analyses; automatically generated `reports/FINAL_REPORT.md`; `make all`.
+- Fetchers for all validation datasets and resources (MSigDB, CollecTRI, PROGENy, mm10 RefSeq, GPL16570).
+- Decision log D-010 – D-014; `docs/validation_plan.md` (committed before validation).
+- 12 unit tests for the decision rules (40 total).
+
+### Findings recorded
+- Published primary ILC2 group likely = S2 only; S1 technically distinct (D-012).
+- nILC2/iILC2 not resolvable as stable sub-clusters (D-012).
+
 ## [0.3.1] — 2026-10-15
 
 ### Fixed

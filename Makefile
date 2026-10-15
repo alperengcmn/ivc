@@ -5,7 +5,7 @@ META        := metadata/GSE295590
 REPORTS     := reports/validation
 
 .DEFAULT_GOAL := help
-.PHONY: help env install validate validate-samples validate-crosswalk test lint format fetch fetch-all fetch-resources qc embed annotate de pathways tf chromatin validate-external robustness clean
+.PHONY: help env install validate validate-samples validate-crosswalk test lint format fetch fetch-all fetch-resources qc embed annotate de pathways tf chromatin validate-external robustness report all clean
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-20s\033[0m %s\n",$$1,$$2}'
@@ -68,6 +68,11 @@ validate-external: ## Phase 10 — cross-dataset validation of the frozen signat
 
 robustness: ## Phase 11 — sensitivity analyses of the frozen signature
 	$(PY) scripts/11_robustness.py
+
+report: ## Phase 12 — assemble reports/FINAL_REPORT.md from results
+	$(PY) scripts/12_final_report.py
+
+all: validate qc embed annotate de pathways tf chromatin validate-external robustness report ## Run the whole pipeline (after fetch, fetch-all, fetch-resources)
 
 clean: ## Remove caches (never touches data/ or results/)
 	find . -type d \( -name __pycache__ -o -name .pytest_cache -o -name .ruff_cache \) -prune -exec rm -rf {} +

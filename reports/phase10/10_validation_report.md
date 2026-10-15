@@ -19,10 +19,12 @@ ILC2s analysed: day 5 179, day 10 395. Signature genes correlated with an acute 
 - **Acute-shared:** none
 - **Recall-specific candidates (measurable, not acute-shared):** AW112010, Alad, Aprt, Arg1, B930036N10Rik, Batf, Bloc1s1, Calca, Camk2n1, Cd74, Cebpb, Cisd1, Cox5a, Csf2, Cst7, Cxcr4, Dctpp1, Dut, Ecm1, Ets2, Fcer1g, Fos, Gapdh, Gem, Glrx, Gm11808, H2-Aa, H2-Ab1, H2-DMa, H2-Q4, Hes1, Hint1, Ifi203, Il13, Impa2, Isg15, Kit, Klf10, Klf3, Klf4, Kmt2d, Lgals1, Lpcat2, Malat1, Mrpl12, Mrpl51, Nhp2, Nme1, Npm1, Nudcd2, Nudt21, Pdcd4, Plaur, Prdx4, Rab27b, Rasgrp2, Rnaset2a, Rnaset2b, Sdc4, Serpinb6a, Serpinb9, Sh3bgrl, Siva1, Snhg9, Socs2, Spry2, Susd6, Tle4, Tnfrsf4, Tnfrsf9, Tomm5, Tpi1, Trim12a, Uba52, Vim, Zfp36
 
+- **Opposite to acute activation** (signature direction opposite to the acute correlation, FDR < 0.05 on both days; these separate recall from acute activation most clearly): Calca, Csf2, Plaur
+
 ## Mechanistic and context datasets
 | dataset | question | in signature | background | odds ratio | p | note |
 |---|---|---|---|---|---|---|
-| GSE149854 | recall_up genes reduced in Batf KO (BATF-dependent) | 0/0 | 3196/5760 | nan | 1 | authors' DESeq2 table; log2FC = KO/WT (sign check 0%) |
+| GSE149854 | recall_up genes reduced in Batf KO (BATF-dependent) | 3/31 | 3752/6369 | 0.0747 | 1 | authors' DESeq2 table (appears pre-filtered); log2FC orientation inferred from FPKM means: WT/KO |
 | GSE262210 | recall_up genes changed by iron deprivation (DEF vs vehicle) | 47/50 | 9078/13532 | 7.69 | 5.83e-06 | DESeq2, 3 v 3 |
 | GSE262210 | recall_down genes changed by iron deprivation (DEF vs vehicle) | 32/46 | 9093/13536 | 1.12 | 0.433 | DESeq2, 3 v 3 |
 | GSE291231 | signature direction under in-vitro stimulation (activation-shared?) | 59/95 agree | - | nan | 0.0117 | DESeq2 paired by mouse, 4 v 4 |

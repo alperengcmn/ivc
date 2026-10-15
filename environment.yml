@@ -2,8 +2,6 @@
 #   conda env create -f environment.yml
 #   conda activate ilc2-tri
 #
-# Heavy, optional stages (pySCENIC in Phase 8, ATAC tooling in Phase 9) get their own
-# environment files when we reach them, so this one stays fast to solve.
 name: ilc2-tri
 channels:
   - conda-forge
@@ -19,9 +17,13 @@ dependencies:
   - pandas
   - matplotlib
   - seaborn
-  - harmonypy             # batch evaluation/correction, only when justified (Phase 4)
-  - decoupler-py          # pseudobulk, TF / pathway activity (Phases 6–8)
-  - gseapy                # GSEA / ORA (Phase 7)
+  - scikit-learn
+  - leidenalg             # Leiden clustering (Phase 4–5)
+  - python-igraph
+  - harmonypy             # available for batch evaluation; not applied (D-011)
+  - statsmodels
+  - gseapy                # pre-ranked GSEA (Phase 7)
+  - openpyxl              # reads the GSE149854 author table (Phase 10)
   - pyyaml
   # workflow & notebooks
   - jupyterlab
@@ -31,4 +33,6 @@ dependencies:
   - ruff
   - pip
   - pip:
+      - decoupler>=2.0     # CollecTRI / PROGENy ULM (Phase 8); pip build is the maintained one
+      - pydeseq2>=0.5      # differential accessibility / bulk context (Phases 9–10)
       - -e .
