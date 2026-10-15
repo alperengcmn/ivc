@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.stack }} stack · Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Oldest supported stack — conda-forge often resolves to older releases than pip.
+          # This combination reproduced the scrublet/categorical bug fixed in 0.3.1.
+          - stack: oldest
+            python: "3.10"
+            pins: "scanpy==1.10.4 anndata==0.10.9 pandas==2.2.3 numpy<2.1"
+          - stack: latest
+            python: "3.12"
+            pins: "scanpy anndata pandas numpy"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ${{ matrix.pins }} pyyaml matplotlib scikit-image
+          python -m pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check src tests scripts && ruff format --check src tests scripts
+      - name: Test
+        run: python -m pytest
+      - name: Validate committed metadata
+        run: make validate PY=python

@@ -3,4 +3,4 @@
 Phase 1 validators use only the standard library; QC (Phase 3+) needs the analysis environment.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"

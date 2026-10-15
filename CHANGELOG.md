@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.1] — 2026-10-15
+
+### Fixed
+- `make qc` crashed with `AttributeError: Can only use .cat accessor with a 'category' dtype` on
+  older stacks (scanpy 1.10 / anndata 0.10 / pandas 2.2, as resolved by conda-forge): scrublet drops
+  categorical dtypes. QC no longer depends on the dtype, restores it after scrublet, and refuses to
+  continue if scrublet ever changes cell order.
+
+### Added
+- Tests that run the real scrublet path (the earlier suite only used `--no-doublets`), 28 total.
+- GitHub Actions CI on an *oldest* and a *latest* dependency stack.
+
 ## [0.3.0] — 2026-10-15
 
 ### Added

@@ -6,7 +6,8 @@
 
 ![status](https://img.shields.io/badge/status-Phase%203%20·%20QC-blue)
 ![python](https://img.shields.io/badge/python-3.10%2B-3776AB)
-![tests](https://img.shields.io/badge/tests-26%20passing-brightgreen)
+![tests](https://img.shields.io/badge/tests-28%20passing-brightgreen)
+![ci](https://img.shields.io/badge/CI-oldest%20%2B%20latest%20stack-2088FF)
 ![claims](https://img.shields.io/badge/claims-evidence--scoped-8A2BE2)
 
 [Question](#-scientific-question) ·
@@ -129,7 +130,7 @@ conda activate ilc2-tri
 # — or — lightweight, validators + tests only
 python -m pip install -e ".[dev]"
 
-make test        # 26 tests
+make test        # 28 tests
 make validate    # Scripts 01 + 02 → reports/validation/
 make fetch       # Phase 2: download GSE295590 matrices into data/raw/
 make qc          # Phase 3: QC report → reports/qc/, outputs → results/qc/

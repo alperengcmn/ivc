@@ -108,9 +108,26 @@ def load(samples: Sequence[SampleFiles]):
         adatas[s.geo] = a
     adata = ad.concat(adatas, label="sample_key", index_unique="-", merge="same")
     adata.obs = adata.obs.drop(columns="sample_key")
-    for col in ("sample", "sample_title", "infection_group"):
-        adata.obs[col] = adata.obs[col].astype("category")
+    restore_categories(adata)
     return adata
+
+
+CATEGORICAL_OBS = ("sample", "sample_title", "infection_group")
+
+
+def restore_categories(adata) -> None:
+    """(Re)apply categorical dtypes. Some scanpy versions drop them inside scrublet."""
+    for col in CATEGORICAL_OBS:
+        if col in adata.obs:
+            adata.obs[col] = adata.obs[col].astype(str).astype("category")
+
+
+def sample_order(obs) -> list[str]:
+    """Sample IDs in a stable order, whatever the column dtype."""
+    col = obs["sample"]
+    if hasattr(col, "cat"):
+        return [str(c) for c in col.cat.categories if (col == c).any()]
+    return sorted(col.astype(str).unique())
 
 
 def compute_metrics(adata, seed: int = 0, doublets: bool = True) -> str:
@@ -125,10 +142,16 @@ def compute_metrics(adata, seed: int = 0, doublets: bool = True) -> str:
 
     if not doublets:
         return "skipped (--no-doublets)"
+    cells_before = adata.obs_names.copy()
     try:
         sc.pp.scrublet(adata, batch_key="sample", random_state=seed)
     except Exception as exc:  # report the failure, never hide it
         return f"FAILED — {type(exc).__name__}: {exc}"
+    finally:
+        restore_categories(adata)
+    if not adata.obs_names.equals(cells_before):
+        # Never silently misattach metrics to the wrong cells.
+        raise RuntimeError("scrublet changed the cell order; refusing to continue.")
     return "scrublet, per sample"
 
 
@@ -146,7 +169,7 @@ def flag_outliers(adata) -> None:
     import numpy as np
 
     flags = {k: np.zeros(adata.n_obs, dtype=bool) for k in ("outlier_counts", "outlier_mito")}
-    for sample in adata.obs["sample"].cat.categories:
+    for sample in sample_order(adata.obs):
         idx = np.flatnonzero((adata.obs["sample"] == sample).to_numpy())
         obs = adata.obs.iloc[idx]
         flags["outlier_counts"][idx] = mad_outlier(
@@ -279,7 +302,7 @@ def figures(adata, out_dir: Path) -> list[Path]:
 
     out_dir.mkdir(parents=True, exist_ok=True)
     obs = adata.obs
-    samples = list(obs["sample"].cat.categories)
+    samples = sample_order(obs)
     paths = []
 
     metrics = [

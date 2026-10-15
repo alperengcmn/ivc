@@ -177,3 +177,29 @@ def test_sample_notes_flag_silent_scrublet_and_mito_tail():
     assert "10.1 % of cells" in notes
     assert "9,012 cells" in notes  # integer formatting
     assert "unreliable" not in notes  # S2 has 838 cells, above the scrublet minimum
+
+
+def test_full_run_with_scrublet(raw_dir, params, tmp_path):
+    """Exercises the doublet path the other tests skip (regression: scanpy 1.10 drops categoricals)."""
+    report = tmp_path / "qc.md"
+    rc = qc.main(
+        [
+            "--raw-dir",
+            str(raw_dir),
+            "--out-dir",
+            str(tmp_path / "qc"),
+            "--report",
+            str(report),
+            "--params",
+            str(params()),
+        ]
+    )
+    assert rc == 0
+    assert "Doublet scoring: scrublet, per sample" in report.read_text()
+
+
+def test_sample_order_without_categorical_dtype():
+    import pandas as pd
+
+    obs = pd.DataFrame({"sample": ["GSM8953516", "GSM8953514", "GSM8953514"]})  # object dtype
+    assert qc.sample_order(obs) == ["GSM8953514", "GSM8953516"]

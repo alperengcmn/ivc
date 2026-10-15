@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ilc2tri"
-version = "0.3.0"
+version = "0.3.1"
 description = "Lung ILC2 trained/recall-associated transcriptional signatures: a reproducible, replicate-aware single-cell reanalysis."
 readme = "README.md"
 requires-python = ">=3.10"
