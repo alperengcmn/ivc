@@ -5,7 +5,7 @@ META        := metadata/GSE295590
 REPORTS     := reports/validation
 
 .DEFAULT_GOAL := help
-.PHONY: help env install validate validate-samples validate-crosswalk test lint format fetch fetch-all fetch-resources qc clean
+.PHONY: help env install validate validate-samples validate-crosswalk test lint format fetch fetch-all fetch-resources qc embed annotate de pathways clean
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-20s\033[0m %s\n",$$1,$$2}'
@@ -44,6 +44,18 @@ fetch-resources: ## Download MSigDB, CollecTRI and PROGENy (mouse) into referenc
 
 qc: ## Phase 3 — QC report (report-only until thresholds are agreed)
 	$(PY) scripts/03_qc.py
+
+embed: ## Phase 4 — depth-matched embedding and clustering
+	$(PY) scripts/04_embed.py
+
+annotate: ## Phase 5 — lineage annotation and nILC2/iILC2 subsets
+	$(PY) scripts/05_annotate.py
+
+de: ## Phase 6 — exploratory library-consistency DE in ILC2s
+	$(PY) scripts/06_de.py
+
+pathways: ## Phase 7 — GSEA + freeze discovery signature (signatures/)
+	$(PY) scripts/07_pathways.py
 
 clean: ## Remove caches (never touches data/ or results/)
 	find . -type d \( -name __pycache__ -o -name .pytest_cache -o -name .ruff_cache \) -prune -exec rm -rf {} +

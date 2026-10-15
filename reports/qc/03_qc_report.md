@@ -1,7 +1,7 @@
 # Phase 3 — single-cell QC · GSE295590
 
-- Mode: **report-only**
-- **PHASE 3 GATE: NOT EVALUABLE** — threshold(s) not yet agreed: `min_cells_per_sample`, `max_pct_mito`, `min_genes_per_cell`, `max_genes_per_cell`. No cells were removed.
+- Mode: **filter**
+- **PHASE 3 GATE: PASS** — 17,575 cells retained; every sample needs ≥ 500 cells after filtering.
 - Doublet scoring: scrublet, per sample
 
 > Cell counts are not biological sample sizes. These metrics describe libraries; the replicate structure of GSE295590 remains UNRESOLVED (docs/GSE295590_design.md).
@@ -21,6 +21,13 @@ Counts/genes outliers: > 5 MAD on log scale, per sample. Mito outliers: > 3 MAD 
 | GSM8953514 | 2.35 | 8.29 | 0.00 | 3.95 |
 | GSM8953515 | 9.79 | 12.77 | 1.19 | 4.35 |
 | GSM8953516 | 5.62 | 15.32 | 0.00 | 6.59 |
+
+## Retained after filtering
+| sample | retained_cells |
+|---|---|
+| GSM8953514 | 9,011 |
+| GSM8953515 | 811 |
+| GSM8953516 | 7,753 |
 
 ## Dataset-level observations
 - Every library starts at ≈ 500 UMI per cell — the deposited matrices appear to be **already filtered** (e.g. a ≥ 500-UMI cut-off by the authors). Barcodes below that floor cannot be recovered from these files.

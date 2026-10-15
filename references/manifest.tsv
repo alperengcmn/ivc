@@ -1,0 +1,6 @@
+file	source	version	sha256	downloaded_utc
+msigdb_hallmark_mouse.gmt	https://data.broadinstitute.org/gsea-msigdb/msigdb/release/2025.1.Mm/mh.all.v2025.1.Mm.symbols.gmt	2025.1.Mm	2909a73db35f66a538267fa88dd8260e864a5c8d84d3c49c5262fa6bdb6e0805	2026-10-15T08:58:22Z
+msigdb_reactome_mouse.gmt	https://data.broadinstitute.org/gsea-msigdb/msigdb/release/2025.1.Mm/m2.cp.reactome.v2025.1.Mm.symbols.gmt	2025.1.Mm	03fbe5cba7a04c88de7b148f6dc9716a1f2749ad046f2b3b617caa78701bacb5	2026-10-15T08:58:23Z
+collectri_mouse.tsv	decoupler/OmniPath collectri	decoupler 2.1.6	b88b9b0ed1a3892d0067da0e5486d49dd98723f0192517dec1edb56e0af22ee0	2026-10-15T08:59:25Z
+progeny_mouse.tsv	decoupler/OmniPath progeny	decoupler 2.1.6	54a777d0be0343eec82571d76b8ffba344544d79d1e62c1df3ca7d258273a330	2026-10-15T08:59:33Z
+ucsc_mm10_refGene.txt.gz	https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz	mm10	fab8ea8282ea60cf6d9bd17ac3ef2c91bbf3abd47c3ca7c0054b3196a7276fa1	2026-10-15T09:25:25Z

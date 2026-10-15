@@ -4,17 +4,19 @@
 random_seed: 0
 
 phase3_qc:
-  min_cells_per_sample: null      # Phase 0 threshold X — to agree
-  max_pct_mito: null              # Phase 0 threshold Y — set after inspecting distributions, per dataset
-  min_genes_per_cell: null
-  max_genes_per_cell: null
+  # PROVISIONAL (D-010) — set by Alperen from docs/qc_threshold_proposal.md; Divya reviews at project end.
+  min_cells_per_sample: 500
+  max_pct_mito: 20
+  min_genes_per_cell: 200
+  max_genes_per_cell: 8000
   doublet_method: scrublet
   remove_predicted_doublets: false  # scrublet auto-threshold failed on GSE295590 (D-009); doublets assessed in Phase 5
 
 phase5_annotation:
-  min_confirmed_ilc2_cells: null  # Phase 0 threshold N
+  min_confirmed_ilc2_cells: 100   # Phase 0 threshold N — PROVISIONAL (D-010), per library
   max_contamination_score: null   # Phase 0 threshold M
   min_marker_categories: 1        # pipeline rule: never define a population by a single marker
+  subset_reference_library: GSM8953516  # deepest, least contaminated library (D-012)
 
 phase6_differential_expression:
   min_biological_replicates: null # Phase 0 threshold K — BLOCKED until replicate structure is known

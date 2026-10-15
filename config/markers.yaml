@@ -1,0 +1,34 @@
+# Marker categories for Phase 5 (pipeline: "never define a population by a single marker").
+# Mouse gene symbols. Genes absent from a dataset are skipped and reported.
+
+lineage:                     # categories that compete to label a cluster
+  ILC2:        [Gata3, Il1rl1, Il7r, Thy1, Rora, Icos, Il17rb, Klrg1, Arg1]
+  T_cell:      [Cd3e, Cd3g, Cd3d, Cd4, Cd8a, Cd8b1, Cd5, Cd6, Trac]
+  type3_gdT:   [Rorc, Il17a, Il17f, Il22, Il23r, Blk]
+  NK:          [Nkg7, Ncr1, Klrb1c, Gzma, Prf1, Klra8]
+  B_cell:      [Cd19, Cd79a, Cd79b, Ms4a1]
+  myeloid_DC:  [Lyz2, C1qa, Itgax, Flt3, Xcr1, Cd14]
+  mast:        [Cpa3, Cma1, Tpsb2, Fcer1a, Mcpt4]
+  erythroid:   [Hbb-bs, Hbb-bt, Hba-a1, Hba-a2]
+  epithelial:  [Epcam, Sftpc, Scgb1a1, Krt8]
+
+state:                       # descriptive programs, never used to assign lineage
+  type2_effector:   [Il5, Il13, Areg, Calca, Csf2]
+  tissue_residency: [Cd69, Itgae, Rgs1, Cxcr6]
+  activation:       [Il2ra, Tnfrsf4, Tnfrsf9, Nr4a1, Tnfrsf18]
+  stress_response:  [Fos, Fosb, Jun, Junb, Egr1, Hspa1a, Hspa1b, Dusp1]
+  interferon:       [Isg15, Ifit1, Ifit3, Irf7, Stat1]
+  proliferation:    [Mki67, Top2a, Stmn1, Cenpf, Tubb5]
+
+# ILC2 subset programs, following the source study: nILC2 produce IL-5; iILC2 co-produce
+# IL-13 and show higher Ki-67, IL-33R (Il1rl1) and Il2ra. Labels are assigned only when
+# sub-clusters are stable in the reference library (D-012); otherwise these are scores.
+subset:
+  nILC2: [Il5, Calca]
+  iILC2: [Il13, Il2ra, Il1rl1, Mki67, Top2a]
+
+# Genes whose detection is sensitive to ambient RNA / lineage contamination in this dataset
+# (elevated in GSM8953514 ILC2-like cells). Excluded from signatures; see D-012.
+contamination_sensitive: [Cd3e, Cd3g, Cd3d, Trac, Trbc1, Trbc2, Trdc, Tcrg-C1, Tcrg-C2, Tcrg-C4,
+                          Cd2, Cd5, Cd6, Lck, Ccl5, Nkg7, Gzma, Hbb-bs, Hbb-bt, Hba-a1, Hba-a2,
+                          Rorc, Il17a, Il17f, Cd8a, Cd8b1, Cd4]

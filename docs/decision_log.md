@@ -5,6 +5,16 @@ entry. Newest first. Format: **ID · date · decision** — context — conseque
 
 ---
 
+### D-010 · 2026-10-15 · Provisional Phase 3 thresholds applied
+- **Context:** Alperen decided to complete all phases now and have Divya review the whole project
+  at the end, rather than block on threshold sign-off.
+- **Decision:** the values in [`qc_threshold_proposal.md`](qc_threshold_proposal.md) are applied as
+  **provisional**: mito ≤ 20 %, 200–8,000 genes/cell, ≥ 500 cells per sample; predicted doublets
+  not removed. Every downstream result inherits this provisional status.
+- **Consequence:** the Phase 11 sensitivity analyses (mito ≤ 10 %, genes ≥ 500) are mandatory, so
+  Divya can see what changes if she prefers stricter values. Re-running the pipeline with other
+  values is a config edit + `make all`.
+
 ### D-009 · 2026-10-15 · First QC run on the deposited GSE295590 matrices
 - **Context:** first report-only run on the real data
   ([`reports/qc/03_qc_report.md`](../reports/qc/03_qc_report.md)). Cell counts reproduce the earlier

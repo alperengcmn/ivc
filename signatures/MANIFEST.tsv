@@ -1,0 +1,2 @@
+file	version	sha256	frozen_utc	rule
+GSE295590_recall_ILC2_signature_v1.tsv	v1	537d38d957780a607e1632b74b4c7060801b02cf7609ea4260862d70d3bcec1a	2026-10-15T09:34:50Z	Phase 6 concordant (A & B), bootstrap >= 0.95, retained in non-cycling ILC2s, top 50 per direction by min |log2FC|
