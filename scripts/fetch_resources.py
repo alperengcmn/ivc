@@ -7,7 +7,7 @@
 * CollecTRI TF→target network (mouse) — via decoupler / OmniPath
 * PROGENy pathway footprints (mouse, top 500) — via decoupler / OmniPath
 * UCSC mm10 refGene — gene coordinates / TSS for peak-to-gene linkage (Phase 9)
-* GEO GPL16570 annotation — Affymetrix MoGene 2.0 probe → gene symbol (GSE81700)
+* GEO GPL16570 platform SOFT — Affymetrix MoGene 2.0 probe → gene symbol (GSE81700)
 
 Each file is written with a sidecar line in references/manifest.tsv (source, version, SHA-256).
 """
@@ -65,8 +65,9 @@ PLAIN = {
         "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/refGene.txt.gz",
         "mm10",
     ),
-    "GPL16570.annot.gz": (
-        "https://ftp.ncbi.nlm.nih.gov/geo/platforms/GPL16nnn/GPL16570/annot/GPL16570.annot.gz",
+    # No curated .annot exists for GPL16570; the family SOFT file carries the gene_assignment column.
+    "GPL16570_family.soft.gz": (
+        "https://ftp.ncbi.nlm.nih.gov/geo/platforms/GPL16nnn/GPL16570/soft/GPL16570_family.soft.gz",
         "GEO GPL16570",
     ),
 }
